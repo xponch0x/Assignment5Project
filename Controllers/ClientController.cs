@@ -20,11 +20,40 @@ namespace Assignment5Project.Controllers
         }
 
         // GET: Client
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string musicGenre, string searchString)
         {
-              return _context.Music != null ? 
-                          View(await _context.Music.ToListAsync()) :
-                          Problem("Entity set 'Assignment5ProjectContext.Music'  is null.");
+            if (_context.Music == null)
+            {
+                return Problem("Entity set 'Assignment5ProjectContext.Music'  is null.");
+            }
+
+            //use linq query to get list of genres
+            IQueryable<string> genreQuery = from m in _context.Music
+                                            orderby m.Genre
+                                            select m.Genre;
+
+
+            var music = from m in _context.Music
+                        select m;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                music = music.Where(s => s.Title!.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(musicGenre))
+            {
+                music = music.Where(x => x.Genre == musicGenre);
+            }
+
+            var musicGenreVM = new MusicGenreViewModel
+            {
+                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Musics = await music.ToListAsync()
+
+            };
+
+            return View(musicGenreVM);
         }
 
         // GET: Client/Details/5
@@ -45,119 +74,5 @@ namespace Assignment5Project.Controllers
             return View(music);
         }
 
-        // GET: Client/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Client/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Artist,Genre,ReleaseDate,Length,Price")] Music music)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(music);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(music);
-        }
-
-        // GET: Client/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Music == null)
-            {
-                return NotFound();
-            }
-
-            var music = await _context.Music.FindAsync(id);
-            if (music == null)
-            {
-                return NotFound();
-            }
-            return View(music);
-        }
-
-        // POST: Client/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Artist,Genre,ReleaseDate,Length,Price")] Music music)
-        {
-            if (id != music.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(music);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MusicExists(music.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(music);
-        }
-
-        // GET: Client/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Music == null)
-            {
-                return NotFound();
-            }
-
-            var music = await _context.Music
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (music == null)
-            {
-                return NotFound();
-            }
-
-            return View(music);
-        }
-
-        // POST: Client/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Music == null)
-            {
-                return Problem("Entity set 'Assignment5ProjectContext.Music'  is null.");
-            }
-            var music = await _context.Music.FindAsync(id);
-            if (music != null)
-            {
-                _context.Music.Remove(music);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool MusicExists(int id)
-        {
-          return (_context.Music?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

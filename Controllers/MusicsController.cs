@@ -33,7 +33,6 @@ namespace Assignment5Project.Controllers
                                             select m.Genre;
 
 
-
             var music = from m in _context.Music
                         select m;
 
@@ -47,19 +46,12 @@ namespace Assignment5Project.Controllers
                 music = music.Where(x => x.Genre == musicGenre);
             }
 
-
-            
-
             var musicGenreVM = new MusicGenreViewModel
             {
                 Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
                 Musics = await music.ToListAsync()
                 
             };
-
-            
-
-            
 
             return View(musicGenreVM);
 
