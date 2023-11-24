@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Assignment5Project.Data;
+using Assignment5Project.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Assignment5ProjectContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Assignment5ProjectContext") ?? throw new InvalidOperationException("Connection string 'Assignment5ProjectContext' not found.")));
@@ -9,6 +11,15 @@ builder.Services.AddDbContext<Assignment5ProjectContext>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    SeedData.Initialize(services);
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

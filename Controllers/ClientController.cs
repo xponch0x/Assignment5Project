@@ -10,64 +10,24 @@ using Assignment5Project.Models;
 
 namespace Assignment5Project.Controllers
 {
-    public class MusicsController : Controller
+    public class ClientController : Controller
     {
         private readonly Assignment5ProjectContext _context;
 
-        public MusicsController(Assignment5ProjectContext context)
+        public ClientController(Assignment5ProjectContext context)
         {
             _context = context;
         }
 
-        // GET: Musics
-        public async Task<IActionResult> Index(string musicGenre, string searchString)
+        // GET: Client
+        public async Task<IActionResult> Index()
         {
-            if (_context.Music == null) 
-            {
-                return Problem("Entity set 'Assignment5ProjectContext.Music'  is null.");
-            }
-
-            //use linq query to get list of genres
-            IQueryable<string> genreQuery = from m in _context.Music
-                                            orderby m.Genre
-                                            select m.Genre;
-
-
-
-            var music = from m in _context.Music
-                        select m;
-
-            if (!string.IsNullOrEmpty(searchString)) 
-            {
-                music = music.Where(s => s.Title!.Contains(searchString));
-            }
-
-            if (!string.IsNullOrEmpty(musicGenre)) 
-            {
-                music = music.Where(x => x.Genre == musicGenre);
-            }
-
-
-            
-
-            var musicGenreVM = new MusicGenreViewModel
-            {
-                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
-                Musics = await music.ToListAsync()
-                
-            };
-
-            
-
-            
-
-            return View(musicGenreVM);
-
+              return _context.Music != null ? 
+                          View(await _context.Music.ToListAsync()) :
+                          Problem("Entity set 'Assignment5ProjectContext.Music'  is null.");
         }
 
-        
-
-        // GET: Musics/Details/5
+        // GET: Client/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Music == null)
@@ -85,13 +45,13 @@ namespace Assignment5Project.Controllers
             return View(music);
         }
 
-        // GET: Musics/Create
+        // GET: Client/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Musics/Create
+        // POST: Client/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -107,7 +67,7 @@ namespace Assignment5Project.Controllers
             return View(music);
         }
 
-        // GET: Musics/Edit/5
+        // GET: Client/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Music == null)
@@ -123,7 +83,7 @@ namespace Assignment5Project.Controllers
             return View(music);
         }
 
-        // POST: Musics/Edit/5
+        // POST: Client/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -158,7 +118,7 @@ namespace Assignment5Project.Controllers
             return View(music);
         }
 
-        // GET: Musics/Delete/5
+        // GET: Client/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Music == null)
@@ -176,7 +136,7 @@ namespace Assignment5Project.Controllers
             return View(music);
         }
 
-        // POST: Musics/Delete/5
+        // POST: Client/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
