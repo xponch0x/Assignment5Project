@@ -73,6 +73,10 @@ namespace Assignment5Project.Controllers
 
             return View(music);
         }
+        public IActionResult MyCart()
+        {
+            return View();
+        }
 
     }
 }
