@@ -20,7 +20,7 @@ namespace Assignment5Project.Controllers
         }
 
         // GET: Client
-        public async Task<IActionResult> Index(string musicGenre, string searchString)
+        public async Task<IActionResult> Index(string musicGenre, string musicArtist, string searchString)
         {
             if (_context.Music == null)
             {
@@ -36,15 +36,22 @@ namespace Assignment5Project.Controllers
             var music = from m in _context.Music
                         select m;
 
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 music = music.Where(s => s.Title!.Contains(searchString));
+            }
+            if (!string.IsNullOrEmpty(musicArtist))
+            {
+                music = music.Where(s => s.Artist!.Contains(musicArtist));
             }
 
             if (!string.IsNullOrEmpty(musicGenre))
             {
                 music = music.Where(x => x.Genre == musicGenre);
             }
+
+
 
             var musicGenreVM = new MusicGenreViewModel
             {

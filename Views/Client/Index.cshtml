@@ -12,9 +12,10 @@
             <option value="">All</option>
         </select>
 
-        <select asp-for="MusicGenre" asp-items="Model.Genres">
-            <option value="">All</option>
-        </select>
+        
+
+        Artist: <input type="text" name="musicArtist" formmethod="get" />
+        <input type="submit" value="Filter" />
 
         Title: <input type="text" name="SearchString" formmethod="get" />
         <input type="submit" value="Filter" />
