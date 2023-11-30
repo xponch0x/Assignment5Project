@@ -39,7 +39,17 @@ namespace Assignment5Project.Models
                         ReleaseDate = DateTime.Parse("1997-5-20"),
                         Length = "4:10",
                         Price = 1.99m
+                    },
+                    new Music
+                    {
+                        Title = "Sucker",
+                        Artist = "Jonas Brothers",
+                        Genre = "Pop",
+                        ReleaseDate = DateTime.Parse("2019-3-1"),
+                        Length = "4:10",
+                        Price = 1.99m
                     }
+                    
                 );
                 context.SaveChanges();
             }
