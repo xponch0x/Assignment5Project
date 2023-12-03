@@ -36,6 +36,7 @@ namespace Assignment5Project.Controllers
             var music = from m in _context.Music
                         select m;
 
+            //checks if strings are null
             if (!string.IsNullOrEmpty(searchString)) 
             {
                 music = music.Where(s => s.Title!.Contains(searchString));

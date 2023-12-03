@@ -4,6 +4,7 @@ namespace Assignment5Project.Models
 {
     public class Music
     {
+        //view model for music database
         public int Id { get; set; }
         public string Title { get; set; }
         public string Artist { get; set; }
